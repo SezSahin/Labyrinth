@@ -23,14 +23,14 @@ namespace Labyrinth
         public bool Move()
         {
             int col = 7;
-            int row = 6;
-            Console.SetCursorPosition(col, row);
+            int row = 7;
+            Console.SetCursorPosition(col, row);    //Places the "*" before the loop    //In column 7, row 7
             Console.Write("*");
             Console.SetCursorPosition(col, row);
             while (true)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);
-                if (info.Key == ConsoleKey.W)
+                if (info.Key == ConsoleKey.W)       //Compares the given info in ReadKey to the given ConsoleKey ("W")
                 {
                     Console.Write(" ");
                     Debug.Print("W");
@@ -53,11 +53,14 @@ namespace Labyrinth
                 if (info.Key == ConsoleKey.D)
                 {
                     Console.Write(" ");
-                    Debug.Print("D");
+                    Debug.Print("D");       //Writes a message followed by a line terminator to the trace listeners in the Listeners collection.
                     col++;
                 }
 
-                Console.SetCursorPosition(col, row);
+                //Debug.Print & Console.Writeline
+                //Debug writes the message to the Output > Debug. Console.WriteLine writes the message to the standard output (Console).
+
+                Console.SetCursorPosition(col, row);    //Places the "*" after the loop
                 Console.Write("*");
                 Console.SetCursorPosition(col, row);
             }

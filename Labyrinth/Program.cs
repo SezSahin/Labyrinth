@@ -36,6 +36,11 @@ namespace Labyrinth
         {
             Labyrinth Lab = new Labyrinth();
             Lab.Move();
+
+            while(Console.ReadKey().Key == ConsoleKey.Backspace)
+            {
+                break;
+            }
         }
     }
 }
