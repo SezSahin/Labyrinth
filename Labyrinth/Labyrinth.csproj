@@ -49,6 +49,7 @@
     <Compile Include="ILabyrinth.cs" />
     <Compile Include="Labyrinth.cs" />
     <Compile Include="LabyrinthHandler.cs" />
+    <Compile Include="MazeGen.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Size.cs" />

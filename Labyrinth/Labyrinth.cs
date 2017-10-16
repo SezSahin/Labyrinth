@@ -76,14 +76,26 @@ namespace Labyrinth
                 }
             }
 
-            public void Display()
+        //internal void Generator()
+        //{
+        //    cellWidth = 20;
+        //    cellHeight = 20;
+        //    cells = new CellState[20, 20];
+        //    for (var x = 0; x < cellWidth; x++)
+        //        for (var y = 0; y < cellHeight; y++)
+        //            cells[x, y] = CellState.Initial;
+        //    _rng = new Random();
+        //    VisitCell(_rng.Next(20), _rng.Next(20)); throw new NotImplementedException();
+        //}
+
+        public void Display()
             {
                 var firstLine = string.Empty;
-                for (var y = 0; y < cellHeight; y++)
+                for (int y = 0; y < cellHeight; y++)
                 {
                     var sbTop = new StringBuilder();
                     var sbMid = new StringBuilder();
-                    for (var x = 0; x < cellWidth; x++)
+                    for (int x = 0; x < cellWidth; x++)
                     {
                         sbTop.Append(this[x, y].HasFlag(CellState.Top) ? "+--" : "+  ");
                         sbMid.Append(this[x, y].HasFlag(CellState.Left) ? "|  " : "   ");
@@ -136,6 +148,7 @@ namespace Labyrinth
                     Debug.Print("D");       //Writes a message followed by a line terminator to the trace listeners in the Listeners collection.
                     col++;
                 }
+                if(Console.WindowTop >= 180)
 
                 //Debug.Print & Console.Writeline
                 //Debug writes the message to the Output > Debug. Console.WriteLine writes the message to the standard output (Console).

@@ -2,6 +2,8 @@
 {
     internal class Size
     {
+        //Totally irrelevant for now
+
         private int cellWidth;
         private int cellHeight;
 

@@ -79,8 +79,8 @@ namespace Labyrinth
             Console.ForegroundColor = ConsoleColor.White;
             Labyrinth Lab = new Labyrinth();
             Maze Mz = new Maze();
-            // LUAN !!!     Fix det plz :(
-            Maze.Generator();
+
+            //Mz.Generator();
             Lab.Move();
 
             while(Console.ReadKey().Key == ConsoleKey.Backspace)
