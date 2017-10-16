@@ -5,104 +5,101 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Drawing;
+using static Labyrinth.Extensions;
 
 namespace Labyrinth
 {
+        public enum CellState
+        {
+            Top = 1,
+            Right = 2,
+            Bottom = 4,
+            Left = 8,
+            Visited = 128,
+            Initial = Top | Right | Bottom | Left,
+        }
+        public struct RemoveWallAction
+        {
+            public Point Neighbour;
+            public CellState Wall;
+        }
+
+        public class Maze
+        {
+            public bool currentPlayer = true;
+
+            public char[,] Board;
+
+            public string Name;
+
+            int Rows;
+            int Columns;
+            int cellWidth;
+            int cellHeight;
+            private CellState[,] cells;
+            private Random _rng;
+
+            internal void Generator(int width, int height)
+            {
+                cellWidth = width;
+                cellHeight = height;
+                cells = new CellState[width, height];
+                for (var x = 0; x < cellWidth; x++)
+                    for (var y = 0; y < cellHeight; y++)
+                        cells[x, y] = CellState.Initial;
+                _rng = new Random();
+                VisitCell(_rng.Next(width), _rng.Next(height));
+            }
+            public CellState this[int x, int y]
+            {
+                get { return cells[x, y]; }
+                set { cells[x, y] = value; }
+            }
+
+            public IEnumerable<RemoveWallAction> GetNeighbours(Point p)
+            {
+                if (p.X > 0) yield return new RemoveWallAction { Neighbour = new Point(p.X - 1, p.Y), Wall = CellState.Left };
+                if (p.Y > 0) yield return new RemoveWallAction { Neighbour = new Point(p.X, p.Y - 1), Wall = CellState.Top };
+                if (p.X < cellWidth - 1) yield return new RemoveWallAction { Neighbour = new Point(p.X + 1, p.Y), Wall = CellState.Right };
+                if (p.Y < cellHeight - 1) yield return new RemoveWallAction { Neighbour = new Point(p.X, p.Y + 1), Wall = CellState.Bottom };
+            }
+
+            public void VisitCell(int x, int y)
+            {
+                this[x, y] |= CellState.Visited;
+                foreach (var p in GetNeighbours(new Point(x, y)).Shuffle(_rng).Where(z => !(this[z.Neighbour.X, z.Neighbour.Y].HasFlag(CellState.Visited))))
+                {
+                    this[x, y] -= p.Wall;
+                    this[p.Neighbour.X, p.Neighbour.Y] -= p.Wall.OppositeWall();
+                    VisitCell(p.Neighbour.X, p.Neighbour.Y);
+                }
+            }
+
+            public void Display()
+            {
+                var firstLine = string.Empty;
+                for (var y = 0; y < cellHeight; y++)
+                {
+                    var sbTop = new StringBuilder();
+                    var sbMid = new StringBuilder();
+                    for (var x = 0; x < cellWidth; x++)
+                    {
+                        sbTop.Append(this[x, y].HasFlag(CellState.Top) ? "+--" : "+  ");
+                        sbMid.Append(this[x, y].HasFlag(CellState.Left) ? "|  " : "   ");
+                    }
+                    if (firstLine == string.Empty)
+                        firstLine = sbTop.ToString();
+                    Debug.WriteLine(sbTop + "+");
+                    Debug.WriteLine(sbMid + "|");
+                    Debug.WriteLine(sbMid + "|");
+                }
+                Debug.WriteLine(firstLine);
+            }
+        }
+
     public class Labyrinth //: ILabyrinth
     {
-        public bool currentPlayer = true;
-
-        public char[,] Board;
-
-        public string Name;
-
-        int Rows;
-        int Columns;
-        int cellWidth;
-        int cellHeight;
-
-        public void GetBoardView()
-        {
-            
-            //To indicate up or down movement |
-            //To indicate right or left movement -
-
-            Board = new char[10, 10]
-            {
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},
-                {' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
-            };
-            Console.WriteLine(Board);
-            Thread.Sleep(70);
-        }
-
-        public string Generator()
-        {
-            return null;
-        }
-
-        //public string Draw()
-        //{
-        //    string resultat = "";
-        //    resultat = resultat + "Y\n";
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[0, 0] + "  -" + Board[0, 1] + "    -" + Board[0, 2] + "    -" + Board[0, 3] + "   -" + Board[0, 4] + "    -" + Board[0, 5] + "    -" + Board[0, 6] + "   -" + Board[0, 7] + "    -" + Board[0, 8] + "    -" + Board[0, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[1, 0] + "  -" + Board[1, 1] + "    -" + Board[1, 2] + "    -" + Board[1, 3] + "   -" + Board[1, 4] + "    -" + Board[1, 5] + "    -" + Board[1, 6] + "   -" + Board[1, 7] + "    -" + Board[1, 8] + "    -" + Board[1, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[2, 0] + "  -" + Board[2, 1] + "    -" + Board[2, 2] + "    -" + Board[2, 3] + "   -" + Board[2, 4] + "    -" + Board[2, 5] + "    -" + Board[2, 6] + "   -" + Board[2, 7] + "    -" + Board[2, 8] + "    -" + Board[2, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[3, 0] + "  -" + Board[3, 1] + "    -" + Board[3, 2] + "    -" + Board[3, 3] + "   -" + Board[3, 4] + "    -" + Board[3, 5] + "    -" + Board[3, 6] + "   -" + Board[3, 7] + "    -" + Board[3, 8] + "    -" + Board[3, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[4, 0] + "  -" + Board[4, 1] + "    -" + Board[4, 2] + "    -" + Board[4, 3] + "   -" + Board[4, 4] + "    -" + Board[4, 5] + "    -" + Board[4, 6] + "   -" + Board[4, 7] + "    -" + Board[4, 8] + "    -" + Board[4, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[5, 0] + "  -" + Board[5, 1] + "    -" + Board[5, 2] + "    -" + Board[5, 3] + "   -" + Board[5, 4] + "    -" + Board[5, 5] + "    -" + Board[5, 6] + "   -" + Board[5, 7] + "    -" + Board[5, 8] + "    -" + Board[5, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[6, 0] + "  -" + Board[6, 1] + "    -" + Board[6, 2] + "    -" + Board[6, 3] + "   -" + Board[6, 4] + "    -" + Board[6, 5] + "    -" + Board[6, 6] + "   -" + Board[6, 7] + "    -" + Board[6, 8] + "    -" + Board[6, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[7, 0] + "  -" + Board[7, 1] + "    -" + Board[7, 2] + "    -" + Board[7, 3] + "   -" + Board[7, 4] + "    -" + Board[7, 5] + "    -" + Board[7, 6] + "   -" + Board[7, 7] + "    -" + Board[7, 8] + "    -" + Board[7, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[8, 0] + "  |" + Board[8, 1] + "    |" + Board[8, 2] + "    |" + Board[8, 3] + "   |" + Board[8, 4] + "    |" + Board[8, 5] + "    |" + Board[8, 6] + "   |" + Board[8, 7] + "    |" + Board[8, 8] + "    |" + Board[8, 9] + "   |\n";
-
-        //    resultat = resultat + "  *********************************************************\n";
-
-        //    resultat = resultat + " | " + Board[9, 0] + "  |" + Board[9, 1] + "    |" + Board[9, 2] + "    |" + Board[9, 3] + "   |" + Board[9, 4] + "    |" + Board[9, 5] + "    |" + Board[9, 6] + "   |" + Board[9, 7] + "    |" + Board[9, 8] + "    |" + Board[9, 9] + "   |\n";
-
-        //    resultat = resultat + "     1     2     3    4    5     6     7    8     9     10 \n";
-
-        //    return resultat;
-
-        //    //foreach(char c in resultat)
-        //    //{
-        //    //    Console.Write(c);
-        //    //    Thread.Sleep(70);
-        //    //}
-        //}
         public bool Move()
         {
             int col = 7;
@@ -147,14 +144,6 @@ namespace Labyrinth
                 Console.Write("*");
                 Console.SetCursorPosition(col, row);
             }
-        }
-        public bool CheckWin()
-        {
-            foreach(char fin in Board)
-            {
-                if (fin == '!') return false;
-            }
-            return true;
         }
     }
 }

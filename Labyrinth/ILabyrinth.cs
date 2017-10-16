@@ -11,5 +11,6 @@ namespace Labyrinth
         string GetBoardView();
         bool Move();
         bool CheckWin();
+        void Generator(int width, int height);
     }
 }

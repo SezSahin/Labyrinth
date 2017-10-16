@@ -13,37 +13,37 @@ namespace Labyrinth
 
         static void Main(string[] args)
         {
-            int a;
-            Console.WriteLine("Enter size of index:");
-            a = int.Parse(Console.ReadLine());
-            int[] index = new int[a];
-            Console.WriteLine("-");
-            for (int i = 0; i < index.Length; i++)
-            {
-                Console.WriteLine(index[i]);
-            }
-            Console.WriteLine("-");
-            // The user is entering the numbers (code copied from your question).
-            for (int i = 0; i < index.Length; i++)
-            {
-                Console.WriteLine("Enter number: ");
-                index[i] = int.Parse(Console.ReadLine());
-                Console.WriteLine("-");
-            }
+            //int a;
+            //Console.WriteLine("Enter size of index:");
+            //a = int.Parse(Console.ReadLine());
+            //int[] index = new int[a];
+            //Console.WriteLine("-");
+            //for (int i = 0; i < index.Length; i++)
+            //{
+            //    Console.WriteLine(index[i]);
+            //}
+            //Console.WriteLine("-");
+            //// The user is entering the numbers (code copied from your question).
+            //for (int i = 0; i < index.Length; i++)
+            //{
+            //    Console.WriteLine("Enter number: ");
+            //    index[i] = int.Parse(Console.ReadLine());
+            //    Console.WriteLine("-");
+            //}
 
-            // Now display the numbers entered.
-            for (int i = 0; i < index.Length; i++)
-            {
-                Console.WriteLine(index[i]);
-            }
+            //// Now display the numbers entered.
+            //for (int i = 0; i < index.Length; i++)
+            //{
+            //    Console.WriteLine(index[i]);
+            //}
 
-            // Finally, search for the element and display where it is.
-            int elementToSearchFor;
-            if (int.TryParse(Console.ReadLine(), out elementToSearchFor))
-            {
-                Console.WriteLine(elementToSearchFor);
-                Console.WriteLine("-");
-            }
+            //// Finally, search for the element and display where it is.
+            //int elementToSearchFor;
+            //if (int.TryParse(Console.ReadLine(), out elementToSearchFor))
+            //{
+            //    Console.WriteLine(elementToSearchFor);
+            //    Console.WriteLine("-");
+            //}
 
             Console.Clear();
             Program myProgram = new Program();
@@ -78,7 +78,9 @@ namespace Labyrinth
             Console.WriteLine("Escape!");
             Console.ForegroundColor = ConsoleColor.White;
             Labyrinth Lab = new Labyrinth();
-            Lab.Generate();
+            Maze Mz = new Maze();
+            // LUAN !!!     Fix det plz :(
+            Maze.Generator();
             Lab.Move();
 
             while(Console.ReadKey().Key == ConsoleKey.Backspace)
